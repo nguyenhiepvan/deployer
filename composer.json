@@ -1,0 +1,17 @@
+{
+    "name": "hiepnguyen/deployer",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nguyễn Văn Hiệp",
+            "email": "Nguyenhiepvan.bka@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "php": ">=7.2.5",
+        "deployer/deployer": "^6.8"
+    }
+}
