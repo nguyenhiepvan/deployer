@@ -7,7 +7,6 @@ Deploy all projects that you're managing
 - At each project folder:
     - Define your host
     - Define your tasks
-- Edit list projects will be deployed at `deployer/config.php`
 
 #Runing
 
@@ -17,7 +16,7 @@ composer install
 ```
 
 ```shell
-dep deploy -vvv
+./vendor/bin/dep dep --hosts your-host your-stage -vvv
 ```
 
 #Requirements

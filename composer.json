@@ -9,9 +9,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
-    "require-dev": {
+    "require": {
         "php": ">=7.2.5",
-        "deployer/deployer": "^6.8"
+        "deployer/deployer": "^6.8",
+        "illuminate/collections": ">=7"
     }
 }
