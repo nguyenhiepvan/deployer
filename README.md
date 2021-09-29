@@ -16,7 +16,7 @@ composer install
 ```
 
 ```shell
-./vendor/bin/dep dep --hosts your-host your-stage -vvv
+./vendor/bin/dep deploy --hosts your-host your-stage -vvv
 ```
 
 #Requirements
