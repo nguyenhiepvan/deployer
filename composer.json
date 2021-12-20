@@ -1,5 +1,5 @@
 {
-    "name": "nguyenhiep/deployer",
+    "name": "hiepnguyen/deployer",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -9,9 +9,13 @@
         }
     ],
     "minimum-stability": "dev",
+    "require-dev": {
+        "php": ">=7.2.5"
+    },
     "require": {
-        "php": ">=7.2.5",
-        "deployer/deployer": "^6.8",
-        "illuminate/collections": ">=7"
+        "symfony/var-dumper": "5.4.x-dev",
+        "illuminate/collections": ">=7",
+        "deployer/deployer": "v6.8",
+        "ext-zend-opcache": "*"
     }
 }

@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Hiệp Nguyễn
+ * Date: 01/11/2021
+ * Time: 13:38
+ */
 
 namespace Deployer;
 
@@ -17,9 +23,9 @@ namespace Deployer;
  * @param array $options The options that define the behaviour of the command.
  * @return callable A function that can be used as a task.
  */
-function artisan($command, $options = [])
+function artisan(string $command, array $options = [])
 {
-    return function () use ($command, $options) {
+    return static function () use ($command, $options) {
         $versionTooEarly = array_key_exists('min', $options)
             && laravel_version_compare($options['min'], '<');
 
@@ -49,74 +55,9 @@ function artisan($command, $options = [])
     };
 }
 
-function npm($command, $options = [])
-{
-    return function() use ($command, $options){
-        switch ($command) {
-            case 'install':
-                if (has('previous_release')) {
-                    if (test('[ -d {{previous_release}}/node_modules ]')) {
-                        run('cp -R {{previous_release}}/node_modules {{release_path}}');
-                    }
-                }
-
-                run('cd {{release_path}} && npm install');
-                break;
-            case 'run':
-                if (!isset($options['stage'])) {
-                    $options['stage'] = "prod";
-                }
-                run("cd {{release_path}} && npm run {$options['stage']}");
-                break;
-            default:
-                writeln("<error>command invalid</error>");
-                break;
-        }
-        return;
-    };
-}
-
-function laravel_version_compare($version, $comparator)
-{
-    return version_compare(get('laravel_version'), $version, $comparator);
-}
-
-function upload_file($file_name,$source,$destination,$force = false)
-{
-    return function () use ($file_name,$source,$destination,$force){
-        if (file_exists($file = "$source/$file_name")) {
-            $has_file = test("[ -f $destination/$file_name]");
-            if ($force) {
-                if ($has_file) {
-                    run("rm -f $destination/$file_name");
-                }
-                upload($file, $destination);
-            }else{
-                if (!$has_file) {
-                    upload($file, $destination);
-                }
-            }
-            writeln("File $file_name has been uploaded");
-        }
-    };
-}
-
-desc('npm');
-task('npm:install', npm("install"));
-task('npm:run_prod', npm("run"));
-task('npm:run_dev', npm("run",["stage" => "dev"]));
 
 desc('Disable maintenance mode');
 task('artisan:up', artisan('up', ['runInCurrent', 'showOutput']));
-
-
-desc('restart pm2');
-task('pm2:restart', function () {
-    if (has('previous_release')) {
-        run('cd {{previous_release}} && pm2 delete start.yml');
-    }
-    run('cd {{release_path}} && pm2 start start.yml');
-});
 
 desc('Enable maintenance mode');
 task('artisan:down', artisan('down', ['runInCurrent', 'showOutput']));
@@ -195,55 +136,3 @@ task('artisan:event:clear', artisan('event:clear', ['min' => '5.8.9']));
 
 desc('Execute artisan event:cache');
 task('artisan:event:cache', artisan('event:cache', ['min' => '5.8.9']));
-
-/**
- * Task deploy:public_disk support the public disk.
- * To run this task automatically, please add below line to your deploy.php file
- *
- *     before('deploy:symlink', 'deploy:public_disk');
- *
- * @see https://laravel.com/docs/5.2/filesystem#configuration
- */
-desc('Make symlink for public disk');
-task('deploy:public_disk', function () {
-    // Remove from source.
-    run('if [ -d $(echo {{release_path}}/public/storage) ]; then rm -rf {{release_path}}/public/storage; fi');
-
-    // Create shared dir if it does not exist.
-    run('mkdir -p {{deploy_path}}/shared/storage/app/public');
-
-    // Symlink shared dir to release dir
-    run('{{bin/symlink}} {{deploy_path}}/shared/storage/app/public {{release_path}}/public/storage');
-});
-
-task('opcache_reset', function () {
-    $web_url  = get('web_url');
-    $web_path = get('deploy_path') . "/current/public";
-    preg_match("/https?:\/\/([^\/]+)/", $web_url, $matches);
-//    die($web_url . "||" . $matches[1] . "||" . get('web_ip'));
-    // upload
-    upload(__DIR__ . "/../shares/cache_control.php", $web_path . "/cache_control.php");
-    $output = exec("curl -k --resolve " . $matches[1] . ":443:" . get('web_ip') . " " . $web_url . "/cache_control.php?action=reset");
-    run("rm \"" . $web_path . "/cache_control.php\"");
-//    writeln( $output );
-});
-
-task('opcache_status', function () {
-    $web_url  = get('web_url');
-    $web_path = get('deploy_path') . "/current/public";
-    // upload
-    upload(__DIR__ . "/../shares/cache_control.php", $web_path . "/cache_control.php");
-    $output = file_get_contents($web_url . "/cache_control.php?action=status");
-    run("rm \"" . $web_path . "/cache_control.php\"");
-    writeln($output);
-});
-
-desc('Force unlock if deploy is unlocked');
-task('deploy:force_unlock', function () {
-    $locked = test("[ -f {{deploy_path}}/.dep/deploy.lock ]");
-    if ($locked) {
-        run("rm -f {{deploy_path}}/.dep/deploy.lock");
-    }
-    writeln( 'Deploy is currently unlocked.');
-});
-
