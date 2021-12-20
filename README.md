@@ -1,22 +1,17 @@
-#Perposes
+# Perposes
 
-Deploy all projects that you're managing
+Deploy all projects that you're managing using deployer
 
-#Seting up
+# Installation
 
-- At each project folder:
-    - Define your host
-    - Define your tasks
-
-#Runing
-
-At root folder, run command:
 ```shell
 composer install
 ```
+- copy `domains/.copy.me` to `domains/[your-host]` and define configurations
 
+#Usage
 ```shell
-./vendor/bin/dep deploy --hosts your-host your-stage -vvv
+./vendor/bin/dep [TASK-NAME] [HOST-OR-STAGE] -vvv
 ```
 
-#Requirements
+# Requirements
