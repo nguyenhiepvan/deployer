@@ -9,8 +9,11 @@
 namespace Deployer;
 
 task('composer:install', function () {
-    run('cd {{current_path}}; composer install', ['tty' => true, 'timeout' => null]);
+    run('cd {{current_path}}; {{bin/composer}} install', ['tty' => true, 'timeout' => null]);
 });
 task('composer:update', function () {
-    run('cd {{current_path}}; composer update', ['tty' => true, 'timeout' => null]);
+    run('cd {{current_path}}; {{bin/composer}} update', ['tty' => true, 'timeout' => null]);
+});
+task('composer:dumpautoload', function () {
+    run('cd {{current_path}}; {{bin/composer}} dumpautoload', ['tty' => true, 'timeout' => null]);
 });

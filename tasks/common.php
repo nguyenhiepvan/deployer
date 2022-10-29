@@ -37,21 +37,18 @@ function listFolderFiles(string $dir, array $ignores = []): array
     return $files;
 }
 
-function upload_file(string $source, array $ignores = [], bool $force = true): \Closure
+function upload_file(string $source, array $ignores = ["conf.d"]): \Closure
 {
-    return static function () use ($ignores, $source, $force) {
+    return static function () use ($ignores, $source) {
         $files = listFolderFiles($source, $ignores);
         foreach ($files as $file) {
             $remote_file = str_replace("$source/", "", $file);
-            $has_file    = test("[ -f {{release_path}}/$remote_file]");
-            if ($force) {
-                if ($has_file) {
-                    run("rm -f {{release_path}}/$remote_file");
-                }
-                upload($file, "{{release_path}}/$remote_file");
-            } else if (!$has_file) {
-                upload($file, "{{release_path}}/$remote_file");
-            }
+            upload($file, "{{release_path}}/$remote_file", [
+                "options" => [
+                    "--inplace",
+                    "--quiet",
+                ],
+            ]);
             writeln("File $remote_file has been uploaded");
         }
     };
@@ -75,4 +72,22 @@ task('deploy:public_disk', function () {
 
     // Symlink shared dir to release dir
     run('{{bin/symlink}} {{deploy_path}}/shared/storage/app/public {{release_path}}/public/storage');
+});
+
+desc('rollback previous version');
+task('deploy:rollback', [
+    "rollback",
+    "opcache:reset"
+]);
+
+
+desc('certificate');
+task('deploy:certificate', function () {
+    // if certbot installed
+    if (test('which certbot')) {
+        // if certbot installed
+        run('certbot --nginx -d {{domain}} --email {{email}} --agree-tos');
+    } else {
+        writeln('Please install certbot');
+    }
 });

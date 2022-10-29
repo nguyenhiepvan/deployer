@@ -16,11 +16,11 @@ task( 'opcache:reset', function(){
 
     // upload
     $deploy_public_path = get('deploy_path') . "/releases/" . $releases_list[0] . "/public";
-    $current_public_path = get('deploy_path') . "/releases/" . (isset($releases_list[1]) ? $releases_list[1] : $releases_list[0]) . "/public";
+//    $current_public_path = get('deploy_path') . "/releases/" . (isset($releases_list[1]) ? $releases_list[1] : $releases_list[0]) . "/public";
     upload( __DIR__ . "/../other/cache_control.php" , $deploy_public_path . "/cache_control.php");
-    if($deploy_public_path != $current_public_path) {
-        upload(__DIR__ . "/../other/cache_control.php", $current_public_path . "/cache_control.php");
-    }
+//    if($deploy_public_path != $current_public_path) {
+//        upload(__DIR__ . "/../other/cache_control.php", $current_public_path . "/cache_control.php");
+//    }
 
     // run
     preg_match( "/https?:\/\/([^\/]+)/", $web_url, $matches);
@@ -36,9 +36,9 @@ task( 'opcache:reset', function(){
 
     // remove
     run( "rm \"" . $deploy_public_path . "/cache_control.php\" || true");
-    if($deploy_public_path != $current_public_path){
-        run( "rm \"" . $current_public_path . "/cache_control.php\" || true");
-    }
+//    if($deploy_public_path != $current_public_path){
+//        run( "rm \"" . $current_public_path . "/cache_control.php\" || true");
+//    }
 
     writeln( $output );
 

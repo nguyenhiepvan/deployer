@@ -55,6 +55,7 @@ task("deploy", [
     "artisan:queue:restart",
     "deploy:symlink",
     "deploy:unlock",
+    "pm2:restart",
     "cleanup",
     'opcache:status',
     'opcache:reset',
