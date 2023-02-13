@@ -1,4 +1,4 @@
-FROM 8.1.15-zts-alpine3.17
+FROM php:8.1.15-zts-alpine3.17
 LABEL maintainer="Nguyễn Văn Hiệp <nguyenhiepvan.bka@gmail.com>"
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
