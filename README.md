@@ -15,3 +15,10 @@ composer install
 ```
 
 # Requirements
+
+# Setup ci cd
+- get kwown host
+
+```shell
+ssh-keyscan -p [PORT] [HOST]
+```
