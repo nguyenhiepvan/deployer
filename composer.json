@@ -9,11 +9,13 @@
         }
     ],
     "minimum-stability": "dev",
+    "require-dev": {
+        "php": ">=7.2.5"
+    },
     "require": {
-        "php": "^8.1",
-        "symfony/var-dumper": "v6.2.5",
-        "illuminate/collections": "v9.51.0",
-        "deployer/deployer": "v7.1.4",
+        "symfony/var-dumper": "5.4.x-dev",
+        "illuminate/collections": ">=7",
+        "deployer/deployer": "v6.8",
         "ext-zend-opcache": "*"
     }
 }
